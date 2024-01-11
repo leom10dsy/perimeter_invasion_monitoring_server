@@ -1,0 +1,20 @@
+variables:
+  DOCKER_REGISTRY: 192.168.1.121:8082
+  DOCKER_HOST: 192.168.1.97:2375
+
+docker-deploy-csrd-lms:
+  stage: deploy-docker
+  script:
+    - cd ./lms_center_service
+    - mvn clean package -am -U -s ../ci_settings.yml
+    - export DOCKER_HOST=$DOCKER_HOST
+    - docker build -t lms_center_service:0.0.1-SNAPSHOT .
+    # 删除已经存在的容器
+    - if [ $(docker ps -aqf name=csrd-lms) ]; then docker rm -f $(docker ps -aqf name=csrd-lms);fi
+    # 删除多余的旧镜像
+    # - if [ $(docker images -f "dangling=true" -q) ]; then docker rmi $(docker images -f "dangling=true" -q);fi
+    - docker run -d -p 9091:9091 --name csrd-lms lms_center_service:0.0.1-SNAPSHOT
+  only:
+    - master
+  tags:
+    - alice-shell-common

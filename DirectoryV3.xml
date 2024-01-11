@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <trees>
+     <tree path="/src/main/java/com/csrd/pims/socket/huawei/radar/HuaweiNettyClient.java" title="1" extension=""
+           presentableText="" tooltipTitle="" icon="" textColor="" backgroundColor=""/>
+     <tree path="/src/main/java/com/csrd/pims/socket/huawei/radar/HuaweiRadarEncoder.java" title="2"/>
+     <tree path="/src/main/java/com/csrd/pims/socket/huawei/radar/HuaweiRadarDecoder.java" title="3"/>
+     <tree path="/src/main/java/com/csrd/pims/socket/huawei/radar/HuaweiClientHandler.java" title="4"/>
+     <tree path="/src/main/java/com/csrd/pims/config/huawei/HuaweiRadarConfig.java" title="1"/>
+     <tree path="/src/main/java/com/csrd/pims/config/huawei/HuaweiIvsConfig.java" title="2"/>
+ </trees>

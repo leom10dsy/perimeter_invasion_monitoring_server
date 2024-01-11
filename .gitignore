@@ -1,0 +1,10 @@
+/.mvn/
+/lms_center_service.iml
+/mvnw
+/mvnw.cmd
+.idea/
+/target/
+/xljc.iml
+/src/main/resources/application-dev.yml
+/opt/
+*.log

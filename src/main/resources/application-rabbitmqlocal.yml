@@ -1,0 +1,138 @@
+server:
+  #  服务器端口号配置
+  port: 9097
+  servlet:
+    context-path: /huaweifront
+
+spring:
+  #    rabbitMq配置
+  rabbitmq:
+    host: 192.168.3.101
+    port: 5672
+    username: admin
+    password: CSRD_PASS@2023user
+    virtual-host: /
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/railway_dj?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 初始化大小，最小，最大
+    initial-size: 10
+    min-idle: 10
+    max-active: 50
+    # 获取连接等待超时的时间
+    max-wait: 28800
+    # 配置间隔多久才进行一次检测(毫秒)
+    time-between-eviction-runs-millis: 60000
+    # 配置一个连接在池中最小生存的时间(毫秒)
+    min-evictable-idle-time-millis: 30000
+    validation-query: select 1 from dual
+    test-while-idle: true
+    test-on-borrow: false
+    test-on-return: false
+    pool-prepared-statements: true
+    max-pool-prepared-statement-per-connection-size: 20
+    # 配置监控统计拦截的filters
+    filters: stat,wall,slf4j
+
+logging:
+  config: classpath:logback.xml
+  level:
+    root: info
+
+mybatis-plus:
+  global-config:
+    db-config:
+      #逻辑删除配置
+      logic-delete-value: 1 #删除值
+      logic-not-delete-value: 0 #默认值
+
+sysconfig:
+  #运行模式  0和算法不在一个服务器上  1和算法在同一个服务器上
+  local-media-path: D:\huawei\alarmfile
+  local-delete-flag: false #是否删除本地文件
+  local:
+    ip: 10.168.2.205
+huawei-config:
+  ivs:
+    enable: true
+    number: bafb3c33cae947afad2cc066007f36f8
+    ip: 172.10.60.6
+    port: 18531
+    username: cdtest
+    password: HuaWei@123
+    download: false # 是否进行视频下载
+  nce:
+    enable: false
+    ip: 172.10.60.100
+    port: 26335
+    username: huawei
+    password: Changeme_123
+    #设置一个预制点的间隔距离
+    ptzPointDistance: 100
+    #设置时间间隔用于判断报警
+    timeSpanSec: 30
+    #设置固定时间间隔
+    timeInterval: 5
+    #是否只支持单nce接受报警
+    isSingle: false
+  radar:
+    enable: false
+    ip: 172.10.60.16
+    port: 8899
+    username: admin
+    password: HuaWei@123
+tk:
+  base:
+    companyCode: 102
+    companyName: hw #单位名称  拼音
+    #####ivs配置#####
+    ivsalgorithmCode: 112 # 毫米波雷达
+    ivsAreaCode: 48 # 毫米波雷达
+    ivsPosition: K0 #雷视基础距离
+    ivs-line-info: L201 #线路信息
+    ivs-device-id: 112 #设备编号
+    ivs-camera-channel-id: 1 #摄像机通道号
+    ivs-camera-device-id: 1 #摄像机设备编号
+    #####nce配置#####
+    ncealgorithmCode: 113 # 振动光纤
+    nceAreaCode: 49 # 振动光纤
+    ncePosition: K #光视基础距离
+    nceDistance: K0+200 #光视用于ivs先告警的距离
+    nce-line-info: L201 #线路信息
+    nce-device-id: 313 #设备编号
+    nce-camera-channel-id: 2 #摄像机通道号
+    nce-camera-device-id: 2 #摄像机设备编号
+  # 铁科sftp设置，用于上传文件，华为同事与铁科交涉后获取
+  sftp:
+    username: root
+    password: root
+    host: 127.0.0.1
+    port: 22
+    videoPath: /home/tky/video/
+    imagePath: /home/tky/image/
+  amq:
+    # 交换机
+    test-monitor-platform: test_monitor_platform #交换机（Exchange）
+    # 绑定路由队列
+    alarm-merge-queue: ALARM_QUEUE_MERGE # 报警队列
+    state-merge-queue: STATE_QUEUE_MERGE # 状态队列
+    command-confirm-queue: COMMAND_CONFIRM_QUEUE # 布撤防确认队列
+    # 路由
+    alarm-merge-routingKey: alarm-merge-routingKey #报警路由
+    state-merge-routingKey: state-merge-routingKey #状态路由
+    command-routingKey: command-routingKey #布撤防路由
+    # 广播队列交换机
+    alarm_fanout_exchange: ALARM_CONFIRM_QUEUE
+    state_fanout_exchange: STATE_CONFIRM_QUEUE
+    command_fanout_exchange: COMMAND_QUEUE
+    # 自定义广播队列
+    alarm_fanout_queue: HW_ALARM_CONFIRM_QUEUE
+    state_fanout_queue: HW_STATE_CONFIRM_QUEUE
+    command_fanout_queue: HW_COMMAND_QUEUE
+
+    # 上传地址
+    videoPath: /home/tky/video/
+    imagePath: /home/tky/image/

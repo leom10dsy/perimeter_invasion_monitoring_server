@@ -1,0 +1,85 @@
+server:
+  #  服务器端口号配置
+  port: 9098
+  servlet:
+    context-path: /huaweimwrfront
+
+# Mqtt配置
+mqtt:
+  serverURIs: tcp://localhost:1883
+  username: admin
+  password: admin # CSRD_PASS@2023user
+  topic:
+    csrd-lms-inbound:
+      - /csrd/iot/mwr/+/+/cmd/+/
+      - /csrd/iot/lms/+/+/cmd/deviceDefence/
+    csrd-lms-outbound:
+      - /csrd/iot/mwr/+/+/msg/+/
+
+spring:
+  #   rabbitMq配置
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/pims_front_mwr?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 初始化大小，最小，最大
+    initial-size: 10
+    min-idle: 10
+    max-active: 50
+    # 获取连接等待超时的时间
+    max-wait: 28800
+    # 配置间隔多久才进行一次检测(毫秒)
+    time-between-eviction-runs-millis: 60000
+    # 配置一个连接在池中最小生存的时间(毫秒)
+    min-evictable-idle-time-millis: 30000
+    validation-query: select 1 from dual
+    test-while-idle: true
+    test-on-borrow: false
+    test-on-return: false
+    pool-prepared-statements: true
+    max-pool-prepared-statement-per-connection-size: 20
+    # 配置监控统计拦截的filters
+    filters: stat,wall,slf4j
+
+logging:
+  config: classpath:logback.xml
+  level:
+    root: info
+
+
+mybatis-plus:
+  global-config:
+    db-config:
+      #逻辑删除配置
+      logic-delete-value: 1 #删除值
+      logic-not-delete-value: 0 #默认值
+sysconfig:
+  local-media-path: D:\huawei\alarmfile
+  local:
+    ip: 192.168.3.185
+  sftp:
+    ip: 172.10.60.20
+    port: 22
+    user: root
+    password: HuaWei@123
+    path: /opt/pims/alarmfile
+huawei-config:
+  ivs:
+    enable: false
+    number: bafb3c33cae947afad2cc066007f36f8
+    ip: 10.168.2.210
+    port: 18531
+    username: testPK
+    password: HuaWei@1234
+    mqtt-id: FA_2
+    name: FA_2
+    nginx-context: /api
