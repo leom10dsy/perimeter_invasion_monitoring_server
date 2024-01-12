@@ -338,7 +338,12 @@ public class HuaweiIvsServiceImpl implements HuaweiIvsService {
             tkAlarmMapper.insert(tkAlarmInfo);
             String message = GsonUtil.toJson(tkAlarmInfo);
             log.info("=====> 推送结束报警，alarmData：{}", message);
-            amqpSender.sendByRouter(tkConfigParam.getAmq().getTestMonitorPlatform(), tkConfigParam.getAmq().getAlarmMergeRoutingKey(), message);
+            try {
+                amqpSender.sendByRouter(tkConfigParam.getAmq().getTestMonitorPlatform(), tkConfigParam.getAmq().getAlarmMergeRoutingKey(), message);
+            } catch (Exception e) {
+                log.error("=====> 推送结束报警异常！,{}", e.getMessage());
+                return;
+            }
             tkAlarmInfo.setIsPushAlarm(1);
             tkAlarmMapper.updateById(tkAlarmInfo);
         } catch (Exception e) {

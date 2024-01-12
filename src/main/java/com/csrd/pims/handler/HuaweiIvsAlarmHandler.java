@@ -217,11 +217,11 @@ public class HuaweiIvsAlarmHandler {
                 Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
             } else {
                 // 长期运行不推送
-                log.info("=====> 长期运行，不推送进行中的报警");
-                return;
+//                log.info("=====> 长期运行，不推送进行中的报警");
+//                return;
 
                 //模拟测试继续推送
-//                log.info("=====> 模拟测试，继续推送进行中的报警");
+                log.info("=====> 模拟测试，继续推送进行中的报警");
             }
         }
         /*
@@ -257,8 +257,13 @@ public class HuaweiIvsAlarmHandler {
         Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
         tkAlarmInfo.setAlarmState(alarmStateCalc);
         String message = GsonUtil.toJson(tkAlarmInfo);
-        amqpSender.sendByRouter(tkConfigParam.getAmq().getTestMonitorPlatform(), tkConfigParam.getAmq().getAlarmMergeRoutingKey(), message);
-        log.info("alarmData: {}", message);
+        try {
+            amqpSender.sendByRouter(tkConfigParam.getAmq().getTestMonitorPlatform(), tkConfigParam.getAmq().getAlarmMergeRoutingKey(), message);
+        } catch (Exception e) {
+            log.error("=====> 报警推送异常！,{}", e.getMessage());
+            return;
+        }
+        log.info("报警推送成功！alarmData: {}", message);
         tkAlarmInfo.setIsPushAlarm(1);
         tkAlarmMapper.updateById(tkAlarmInfo);
     }
