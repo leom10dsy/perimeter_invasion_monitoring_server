@@ -62,13 +62,11 @@ public class TkReplyListener {
     public void defenceCmd(String msg) {
         try {
             DefenceRequest defenceRequest = GsonUtil.fromJson(msg, DefenceRequest.class);
-            if (defenceRequest != null && StringUtils.equals(tkConfigParam.getBase().getIvsDeviceId(), defenceRequest.getDeviceId())
-                    && StringUtils.equals(tkConfigParam.getBase().getIvsAreaCode(), defenceRequest.getAreaCode())) {
+            if (defenceRequest != null && StringUtils.equals(tkConfigParam.getBase().getIvsDeviceId(), defenceRequest.getDeviceId())) {
                 log.info("=====> 收到ivs布撤防:{}",defenceRequest);
                 Params.IVS_ALARM_ENABLE.set(defenceRequest.getAreaState() == 1);
                 handleDefence(defenceRequest, TkSysTypeEnum.IVS.getType());
-            } else if (defenceRequest != null && StringUtils.equals(tkConfigParam.getBase().getNceDeviceId(), defenceRequest.getDeviceId())
-                    && StringUtils.equals(tkConfigParam.getBase().getNceAreaCode(), defenceRequest.getAreaCode())) {
+            } else if (defenceRequest != null && StringUtils.equals(tkConfigParam.getBase().getNceDeviceId(), defenceRequest.getDeviceId())) {
                 Params.NCE_ALARM_ENABLE.set(defenceRequest.getAreaState() == 1);
                 log.info("=====> 收到nce布撤防:{}",defenceRequest);
                 handleDefence(defenceRequest, TkSysTypeEnum.NCE.getType());
