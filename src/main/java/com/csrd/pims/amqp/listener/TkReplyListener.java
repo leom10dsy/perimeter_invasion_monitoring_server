@@ -1,15 +1,17 @@
 package com.csrd.pims.amqp.listener;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.csrd.pims.amqp.AmqpSender;
 import com.csrd.pims.amqp.tk.DefenceRequest;
 import com.csrd.pims.amqp.tk.DefenceState;
+import com.csrd.pims.amqp.tk.DefenceStateReply;
 import com.csrd.pims.amqp.tk.DeviceStateReply;
 import com.csrd.pims.bean.config.TkConfigParam;
 import com.csrd.pims.enums.TkSysTypeEnum;
 import com.csrd.pims.service.HuaweiDefenceStateService;
 import com.csrd.pims.tools.GsonUtil;
 import com.csrd.pims.tools.Params;
-import com.csrd.pims.tools.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -85,7 +87,12 @@ public class TkReplyListener {
         defenceState.setDefence(defenceRequest.getAreaState() == 1);
         defenceState.setType(type);
         defenceStateService.updateDefenceState(defenceState);
-        defenceRequest.setSendTime(Utils.dateTimeToStr(new Date()));
-        amqpSender.sendByRouter(tkConfigParam.getAmq().getCommandFanoutExchange(), tkConfigParam.getAmq().getCommandConfirmQueue(), GsonUtil.toJson(defenceRequest));
+
+        DefenceStateReply defenceStateReply = new DefenceStateReply();
+        defenceStateReply.setAreaCode(defenceRequest.getAreaCode());
+        defenceStateReply.setTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
+        defenceStateReply.setAreaState(defenceRequest.getAreaState());
+        defenceStateReply.setDeviceId(defenceRequest.getDeviceId());
+        amqpSender.sendByRouter(tkConfigParam.getAmq().getCommandFanoutExchange(), tkConfigParam.getAmq().getCommandConfirmQueue(), GsonUtil.toJson(defenceStateReply));
     }
 }

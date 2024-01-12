@@ -22,7 +22,7 @@ public class AlarmStateSchedule {
     /**
      * 超过10秒未收到报警消息，推送结束报警
      */
-    @Scheduled(cron = "0/3 * * * * ?")
+    @Scheduled(cron = "0/5 * * * * ?")
     public void alarmState() {
         if (Params.LATEST_ALARM_TIME.isEmpty()) {
             return;

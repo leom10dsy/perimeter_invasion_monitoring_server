@@ -251,6 +251,8 @@ public class HuaweiIvsAlarmHandler {
                     .setAlarmLevel(1)
                     .setAlarmType(CollectionUtils.isEmpty(hwMMWTargetData) ? "石块,其他异物" : "人员");
         }
+
+        // 空指针 LATEST_ALARM_TIME.size = 0 定时任务remove了key
         HWAlarmInfo hwAlarmInfo = Params.LATEST_ALARM_TIME.get(eventPrefix);
         int alarmStateCalc = alarmStateCalc(eventPrefix, alarmTime);
         hwAlarmInfo.setAlarmState(alarmStateCalc);
@@ -296,10 +298,6 @@ public class HuaweiIvsAlarmHandler {
      * @return
      */
     private int alarmStateCalc(String latestKey, Date currentDate) {
-        if (!Params.LATEST_ALARM_TIME.containsKey(latestKey)) {
-            log.info("=====> 定时任务已删除该key，报警结束");
-            return AlarmStateEnum.CLOSE.getValue();
-        }
         if (Params.LATEST_ALARM_TIME.get(latestKey).getAlarmLevel() == 1) {
             // 新的报警事件
             log.info("=====> 新的报警");
