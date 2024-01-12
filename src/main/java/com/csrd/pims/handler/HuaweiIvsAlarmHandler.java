@@ -296,6 +296,10 @@ public class HuaweiIvsAlarmHandler {
      * @return
      */
     private int alarmStateCalc(String latestKey, Date currentDate) {
+        if (!Params.LATEST_ALARM_TIME.containsKey(latestKey)) {
+            log.info("=====> 定时任务已删除该key，报警结束");
+            return AlarmStateEnum.CLOSE.getValue();
+        }
         if (Params.LATEST_ALARM_TIME.get(latestKey).getAlarmLevel() == 1) {
             // 新的报警事件
             log.info("=====> 新的报警");

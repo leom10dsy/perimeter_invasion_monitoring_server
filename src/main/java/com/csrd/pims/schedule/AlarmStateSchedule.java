@@ -22,7 +22,7 @@ public class AlarmStateSchedule {
     /**
      * 超过10秒未收到报警消息，推送结束报警
      */
-    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0/3 * * * * ?")
     public void alarmState() {
         if (Params.LATEST_ALARM_TIME.isEmpty()) {
             return;
@@ -32,7 +32,7 @@ public class AlarmStateSchedule {
             HWAlarmInfo hwAlarmInfo = Params.LATEST_ALARM_TIME.get(mapKey);
             Date latestTime = hwAlarmInfo.getAlarmTime();
             long between = DateUtil.between(latestTime, nowDate, DateUnit.SECOND);
-            if (between > 13) {
+            if (between > 10) {
                 // 推送结束报警并入库
                 try {
                     ivsService.pushCloseAlarm(mapKey, nowDate);
