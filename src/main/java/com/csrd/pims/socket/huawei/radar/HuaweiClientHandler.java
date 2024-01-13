@@ -3,6 +3,7 @@ package com.csrd.pims.socket.huawei.radar;
 
 import com.csrd.pims.bean.config.HuaweiConfigParam;
 import com.csrd.pims.bean.huawei.radar.HwMMWTargetData;
+import com.csrd.pims.config.huawei.HuaweiRadarConfig;
 import com.csrd.pims.tools.ApplicationContextUtil;
 import com.csrd.pims.tools.TcpUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -64,6 +65,9 @@ public class HuaweiClientHandler extends SimpleChannelInboundHandler<HuaweiRadar
                     ctx.channel().writeAndFlush(request);
                     ClientConnectionListener.RE_CONNECT_TIME.set(0);
                     log.info("======> 登录成功后发送接收数据指令0x602A");
+                    if (HuaweiRadarConfig.FAILURE_CAUSE.containsKey("radar")) {
+                        HuaweiRadarConfig.FAILURE_CAUSE.remove("radar");
+                    }
                 }
             }
         }
@@ -111,6 +115,7 @@ public class HuaweiClientHandler extends SimpleChannelInboundHandler<HuaweiRadar
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         synchronized (this) {
             log.error("=====> huaweiRadarServer client connection out!");
+            HuaweiRadarConfig.FAILURE_CAUSE.put("radar", "2");
             if (huaweiRadarServer == null) {
                 return;
             }

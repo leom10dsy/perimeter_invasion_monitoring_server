@@ -38,4 +38,7 @@ public class Params {
     // <alarmEventId, Date>
     public static ConcurrentHashMap<String, HWAlarmInfo> LATEST_ALARM_TIME = new ConcurrentHashMap<>();
 
+    // 故障原因  0 无异常 1激光雷达故障 2毫米波雷达故障 3摄像头故障 4盒子故障 5 震动光纤多个使用,分割,初始化0
+    public static ConcurrentHashMap<String, String> FAILURE_CAUSE = new ConcurrentHashMap<>();
+
 }

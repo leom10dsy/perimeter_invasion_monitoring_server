@@ -216,10 +216,12 @@ public class HuaweiIvsAlarmHandler {
                 hwAlarmInfo.setAlarmState(AlarmStateEnum.MIDDLE.getValue());
                 Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
             } else {
-                // 长期运行不推送
+                //alarmLevel() == 2
+                //长期运行不推送
 //                log.info("=====> 长期运行，不推送进行中的报警");
 //                return;
 
+                tkAlarmMapper.insert(tkAlarmInfo);
                 //模拟测试继续推送
                 log.info("=====> 模拟测试，继续推送进行中的报警");
             }

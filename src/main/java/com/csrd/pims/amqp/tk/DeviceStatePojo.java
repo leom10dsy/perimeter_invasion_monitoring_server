@@ -23,5 +23,5 @@ public class DeviceStatePojo {
     private String sendTime;
 
     // 故障原因  0 无异常 1激光雷达故障 2毫米波雷达故障 3摄像头故障 4盒子故障 5 震动光纤多个使用,分割,初始化0
-    private String failureCause = "0";
+    private String failureCause;
 }

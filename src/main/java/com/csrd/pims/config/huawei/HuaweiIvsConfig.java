@@ -27,6 +27,7 @@ public class HuaweiIvsConfig implements CommandLineRunner {
     @Resource
     private AmqpSender amqpSender;
 
+
     /**
      * 登录ivs
      */
@@ -35,6 +36,9 @@ public class HuaweiIvsConfig implements CommandLineRunner {
                 huaweiConfigParam.getIvs().getUsername(), huaweiConfigParam.getIvs().getPassword());
 
         if (login) {
+            if (HuaweiRadarConfig.FAILURE_CAUSE.isEmpty() || HuaweiRadarConfig.FAILURE_CAUSE.containsKey("ivs")) {
+                HuaweiRadarConfig.FAILURE_CAUSE.remove("ivs");
+            }
 
             log.info("=====> ivs login success");
             List<HuaweiCamera> huaweiCameras = huaweiIvsService.getAllCameraByIpAndPort();
@@ -49,12 +53,12 @@ public class HuaweiIvsConfig implements CommandLineRunner {
 
             Params.huaweiCameras = huaweiCameras;
 
-            log.info("camera subscription successfully {}" , Params.huaweiCameras);
-
+            log.info("camera subscription successfully {}", Params.huaweiCameras);
 
 
         } else {
             try {
+                HuaweiRadarConfig.FAILURE_CAUSE.put("ivs", "3");
                 Thread.sleep(10 * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();

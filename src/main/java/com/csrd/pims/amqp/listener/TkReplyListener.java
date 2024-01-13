@@ -93,6 +93,6 @@ public class TkReplyListener {
         defenceStateReply.setTime(DateUtil.format(new Date(), DatePattern.NORM_DATETIME_PATTERN));
         defenceStateReply.setAreaState(defenceRequest.getAreaState());
         defenceStateReply.setDeviceId(defenceRequest.getDeviceId());
-        amqpSender.sendByRouter(tkConfigParam.getAmq().getCommandFanoutExchange(), tkConfigParam.getAmq().getCommandConfirmQueue(), GsonUtil.toJson(defenceStateReply));
+        amqpSender.sendByRouter(tkConfigParam.getAmq().getTestMonitorPlatform(), tkConfigParam.getAmq().getCommandRoutingKey(), GsonUtil.toJson(defenceRequest));
     }
 }
