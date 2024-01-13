@@ -18,6 +18,8 @@ public class DeviceStatePojo {
 
     private String companyCode;
     private String deviceId;
+
+    //0为离线，1为在线
     private int deviceState;
     private List<DefenceAreaPojo> area;
     private String sendTime;

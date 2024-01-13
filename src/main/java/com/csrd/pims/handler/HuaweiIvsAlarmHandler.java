@@ -255,6 +255,10 @@ public class HuaweiIvsAlarmHandler {
         }
 
         // 空指针 LATEST_ALARM_TIME.size = 0 定时任务remove了key
+        if (!Params.LATEST_ALARM_TIME.containsKey(eventPrefix)){
+            log.warn("=====> Scheduled task has removed alarm!!");
+            return;
+        }
         HWAlarmInfo hwAlarmInfo = Params.LATEST_ALARM_TIME.get(eventPrefix);
         int alarmStateCalc = alarmStateCalc(eventPrefix, alarmTime);
         hwAlarmInfo.setAlarmState(alarmStateCalc);

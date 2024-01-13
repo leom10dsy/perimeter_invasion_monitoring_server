@@ -40,9 +40,6 @@ public class PIMSDestroyConfig implements DisposableBean {
 
             huaweiIvsService.logout(huaweiConfigParam.getIvs().getIp(), huaweiConfigParam.getIvs().getPort(),
                     Params.ivsCookie);
-            if (Params.FAILURE_CAUSE.containsKey("ivs")){
-                Params.FAILURE_CAUSE.remove("ivs");
-            }
 
         }
 

@@ -42,10 +42,10 @@ public class AlarmStateSchedule {
                     log.error("=====> 推送结束报警错误，alarmEventID:{}", hwAlarmInfo.getEventId());
                     log.error(e.getMessage());
                 }
-                if(Params.LATEST_ALARM_TIME.containsKey(mapKey)){
+                if (Params.LATEST_ALARM_TIME.containsKey(mapKey)) {
                     hwAlarmInfo = Params.LATEST_ALARM_TIME.get(mapKey);
                     between = DateUtil.between(hwAlarmInfo.getAlarmTime(), nowDate, DateUnit.SECOND);
-                    if (between > 10){
+                    if (between > 10) {
                         Params.LATEST_ALARM_TIME.remove(mapKey);
                     }
                 }

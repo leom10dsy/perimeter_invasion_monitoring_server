@@ -55,7 +55,6 @@ public class HuaweiIvsSchedule {
                 boolean keepLive = huaweiIvsService.keepLive(huaweiConfigParam.getIvs().getIp(), huaweiConfigParam.getIvs().getPort(),
                         Params.ivsCookie);
                 if (!keepLive) {
-                    Params.FAILURE_CAUSE.put("ivs", "3");
                     //重新登录
 
                     boolean login = huaweiIvsService.login(huaweiConfigParam.getIvs().getIp(), huaweiConfigParam.getIvs().getPort(),
@@ -63,9 +62,6 @@ public class HuaweiIvsSchedule {
                     if (login) {
 
                         log.info("=====> ivs login success");
-                        if (Params.FAILURE_CAUSE.containsKey("ivs")) {
-                            Params.FAILURE_CAUSE.remove("ivs");
-                        }
 
                         List<HuaweiCamera> huaweiCameras = huaweiIvsService.getAllCameraByIpAndPort();
 
@@ -82,9 +78,6 @@ public class HuaweiIvsSchedule {
                     }
 
                 } else {
-                    if (Params.FAILURE_CAUSE.containsKey("ivs")) {
-                        Params.FAILURE_CAUSE.remove("ivs");
-                    }
                 }
             } catch (Exception e) {
                 Params.ivsCookie = null;
@@ -96,9 +89,6 @@ public class HuaweiIvsSchedule {
             if (login) {
 
                 log.info("=====> ivs login success");
-                if (Params.FAILURE_CAUSE.containsKey("ivs")) {
-                    Params.FAILURE_CAUSE.remove("ivs");
-                }
 
                 List<HuaweiCamera> huaweiCameras = huaweiIvsService.getAllCameraByIpAndPort();
 
@@ -112,8 +102,6 @@ public class HuaweiIvsSchedule {
 
                 Params.huaweiCameras = huaweiCameras;
 
-            } else {
-                Params.FAILURE_CAUSE.put("ivs", "3");
             }
 
         }
@@ -159,7 +147,7 @@ public class HuaweiIvsSchedule {
         defenceArea.setAreaCode(tkConfigParam.getBase().getIvsAreaCode());
         defenceArea.setAreaState(Params.IVS_ALARM_ENABLE.get() ? 1 : 0);
         deviceStatePojo.setArea(Collections.singletonList(defenceArea));
-        deviceStatePojo.setDeviceState(Params.ivsCookie == null ? 0 : 1);
+
 
         StringBuilder builder = new StringBuilder();
         if (!Params.FAILURE_CAUSE.isEmpty()) {
@@ -168,13 +156,17 @@ public class HuaweiIvsSchedule {
                 builder.append(",");
             }
         }
+        builder.append(Params.ivsCookie == null ? "3," : "");
         String strAppend = builder.toString();
         String failureCause = "0";
         if (strAppend.endsWith(",")) {
             failureCause = strAppend.substring(0, strAppend.length() - 1);
         }
         deviceStatePojo.setFailureCause(failureCause);
-        amqpSender.sendByRouter(tkConfigParam.getAmq().getTestMonitorPlatform(), tkConfigParam.getAmq().getStateMergeRoutingKey(), GsonUtil.toJson(deviceStatePojo));
+        deviceStatePojo.setDeviceState(failureCause.equals("0") ? 1 : 0);
+        String message = GsonUtil.toJson(deviceStatePojo);
+        log.info("=====> 发送设备状态！deviceStateData:{}", message);
+        amqpSender.sendByRouter(tkConfigParam.getAmq().getTestMonitorPlatform(), tkConfigParam.getAmq().getStateMergeRoutingKey(), GsonUtil.toJson(message));
     }
 
 }
