@@ -282,8 +282,9 @@ public class HuaweiIvsAlarmHandler {
             long between = DateUtil.between(hwAlarmInfo.getAlarmTime(), alarmTime, DateUnit.SECOND);
             if (between > 10) {
                 try {
-                    log.info("=====> 推送上一条{}报警结束, alarmEventID:{}", hwAlarmInfo.getAlarmType(), hwAlarmInfo.getEventId());
-                    ivsService.pushCloseAlarm(eventPrefix, alarmTime);
+                    String eventId = hwAlarmInfo.getEventId();
+                    log.info("=====> 推送上一条{}报警结束, alarmEventID:{}", hwAlarmInfo.getAlarmType(), eventId);
+                    ivsService.pushCloseAlarm(eventId, alarmTime);
                 } catch (Exception e) {
                     log.error("=====> 推送结束报警错误！");
                 }

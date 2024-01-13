@@ -14,7 +14,6 @@ import com.csrd.pims.amqp.AmqpSender;
 import com.csrd.pims.amqp.tk.TKAlarmInfo;
 import com.csrd.pims.bean.config.HuaweiConfigParam;
 import com.csrd.pims.bean.config.TkConfigParam;
-import com.csrd.pims.bean.huawei.bean.HWAlarmInfo;
 import com.csrd.pims.bean.huawei.param.*;
 import com.csrd.pims.bean.huawei.result.HuaweiPTZPresetInfo;
 import com.csrd.pims.bean.huawei.result.RestFulApiResult;
@@ -309,17 +308,16 @@ public class HuaweiIvsServiceImpl implements HuaweiIvsService {
     /**
      * 推送结束报警
      *
-     * @param eventPrefix
+     * @param eventId
      * @param currentDate
      */
     @Override
-    public void pushCloseAlarm(String eventPrefix, Date currentDate) {
+    public synchronized void pushCloseAlarm(String eventId, Date currentDate) {
         // 避免主键重复
         Date lastEndTime = DateUtil.offsetMillisecond(currentDate, -10);
-        HWAlarmInfo hwAlarmInfo = Params.LATEST_ALARM_TIME.get(eventPrefix);
         try {
             LambdaQueryWrapper<TKAlarmInfo> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(TKAlarmInfo::getAlarmEventId, hwAlarmInfo.getEventId());
+            wrapper.eq(TKAlarmInfo::getAlarmEventId, eventId);
             TKAlarmInfo tkAlarmInfo = tkAlarmMapper.selectList(wrapper).get(0);
             // 抓拍、上传图片
             HuaweiCamera huaweiCamera = Params.huaweiCameras.get(0);

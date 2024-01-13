@@ -34,13 +34,22 @@ public class AlarmStateSchedule {
             long between = DateUtil.between(latestTime, nowDate, DateUnit.SECOND);
             if (between > 10) {
                 // 推送结束报警并入库
+                Params.LATEST_ALARM_TIME.remove(mapKey);
                 try {
-                    ivsService.pushCloseAlarm(mapKey, nowDate);
+                    String eventId = hwAlarmInfo.getEventId();
+                    ivsService.pushCloseAlarm(eventId, nowDate);
                 } catch (Exception e) {
                     log.error("=====> 推送结束报警错误，alarmEventID:{}", hwAlarmInfo.getEventId());
                     log.error(e.getMessage());
                 }
-                Params.LATEST_ALARM_TIME.remove(mapKey);
+                if(Params.LATEST_ALARM_TIME.containsKey(mapKey)){
+                    hwAlarmInfo = Params.LATEST_ALARM_TIME.get(mapKey);
+                    between = DateUtil.between(hwAlarmInfo.getAlarmTime(), nowDate, DateUnit.SECOND);
+                    if (between > 10){
+                        Params.LATEST_ALARM_TIME.remove(mapKey);
+                    }
+                }
+
             }
         }
 
