@@ -1,7 +1,6 @@
 package com.csrd.pims.config;
 
 import com.csrd.pims.bean.config.HuaweiConfigParam;
-import com.csrd.pims.config.huawei.HuaweiRadarConfig;
 import com.csrd.pims.dao.entity.ivs.HuaweiCamera;
 import com.csrd.pims.service.HuaweiIvsService;
 import com.csrd.pims.service.HuaweiNceService;
@@ -41,8 +40,8 @@ public class PIMSDestroyConfig implements DisposableBean {
 
             huaweiIvsService.logout(huaweiConfigParam.getIvs().getIp(), huaweiConfigParam.getIvs().getPort(),
                     Params.ivsCookie);
-            if (HuaweiRadarConfig.FAILURE_CAUSE.containsKey("ivs")){
-                HuaweiRadarConfig.FAILURE_CAUSE.remove("ivs");
+            if (Params.FAILURE_CAUSE.containsKey("ivs")){
+                Params.FAILURE_CAUSE.remove("ivs");
             }
 
         }

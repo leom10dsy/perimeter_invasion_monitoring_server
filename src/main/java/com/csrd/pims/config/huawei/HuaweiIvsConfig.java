@@ -36,8 +36,8 @@ public class HuaweiIvsConfig implements CommandLineRunner {
                 huaweiConfigParam.getIvs().getUsername(), huaweiConfigParam.getIvs().getPassword());
 
         if (login) {
-            if (HuaweiRadarConfig.FAILURE_CAUSE.isEmpty() || HuaweiRadarConfig.FAILURE_CAUSE.containsKey("ivs")) {
-                HuaweiRadarConfig.FAILURE_CAUSE.remove("ivs");
+            if (Params.FAILURE_CAUSE.containsKey("ivs")) {
+                Params.FAILURE_CAUSE.remove("ivs");
             }
 
             log.info("=====> ivs login success");
@@ -58,7 +58,7 @@ public class HuaweiIvsConfig implements CommandLineRunner {
 
         } else {
             try {
-                HuaweiRadarConfig.FAILURE_CAUSE.put("ivs", "3");
+                Params.FAILURE_CAUSE.put("ivs", "3");
                 Thread.sleep(10 * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();

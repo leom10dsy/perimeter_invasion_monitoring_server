@@ -6,7 +6,6 @@ import com.csrd.pims.amqp.tk.DeviceStatePojo;
 import com.csrd.pims.bean.config.HuaweiConfigParam;
 import com.csrd.pims.bean.config.TkConfigParam;
 import com.csrd.pims.bean.huawei.HuaweiVideoQueue;
-import com.csrd.pims.config.huawei.HuaweiRadarConfig;
 import com.csrd.pims.dao.entity.ivs.HuaweiCamera;
 import com.csrd.pims.handler.HuaweiIvsScheduleHandler;
 import com.csrd.pims.service.HuaweiIvsMediaService;
@@ -56,7 +55,7 @@ public class HuaweiIvsSchedule {
                 boolean keepLive = huaweiIvsService.keepLive(huaweiConfigParam.getIvs().getIp(), huaweiConfigParam.getIvs().getPort(),
                         Params.ivsCookie);
                 if (!keepLive) {
-                    HuaweiRadarConfig.FAILURE_CAUSE.put("ivs", "3");
+                    Params.FAILURE_CAUSE.put("ivs", "3");
                     //重新登录
 
                     boolean login = huaweiIvsService.login(huaweiConfigParam.getIvs().getIp(), huaweiConfigParam.getIvs().getPort(),
@@ -64,8 +63,8 @@ public class HuaweiIvsSchedule {
                     if (login) {
 
                         log.info("=====> ivs login success");
-                        if (HuaweiRadarConfig.FAILURE_CAUSE.containsKey("ivs")) {
-                            HuaweiRadarConfig.FAILURE_CAUSE.remove("ivs");
+                        if (Params.FAILURE_CAUSE.containsKey("ivs")) {
+                            Params.FAILURE_CAUSE.remove("ivs");
                         }
 
                         List<HuaweiCamera> huaweiCameras = huaweiIvsService.getAllCameraByIpAndPort();
@@ -83,8 +82,8 @@ public class HuaweiIvsSchedule {
                     }
 
                 } else {
-                    if (HuaweiRadarConfig.FAILURE_CAUSE.containsKey("ivs")) {
-                        HuaweiRadarConfig.FAILURE_CAUSE.remove("ivs");
+                    if (Params.FAILURE_CAUSE.containsKey("ivs")) {
+                        Params.FAILURE_CAUSE.remove("ivs");
                     }
                 }
             } catch (Exception e) {
@@ -97,8 +96,8 @@ public class HuaweiIvsSchedule {
             if (login) {
 
                 log.info("=====> ivs login success");
-                if (HuaweiRadarConfig.FAILURE_CAUSE.containsKey("ivs")) {
-                    HuaweiRadarConfig.FAILURE_CAUSE.remove("ivs");
+                if (Params.FAILURE_CAUSE.containsKey("ivs")) {
+                    Params.FAILURE_CAUSE.remove("ivs");
                 }
 
                 List<HuaweiCamera> huaweiCameras = huaweiIvsService.getAllCameraByIpAndPort();
@@ -114,7 +113,7 @@ public class HuaweiIvsSchedule {
                 Params.huaweiCameras = huaweiCameras;
 
             } else {
-                HuaweiRadarConfig.FAILURE_CAUSE.put("ivs", "3");
+                Params.FAILURE_CAUSE.put("ivs", "3");
             }
 
         }
@@ -163,9 +162,9 @@ public class HuaweiIvsSchedule {
         deviceStatePojo.setDeviceState(Params.ivsCookie == null ? 0 : 1);
 
         StringBuilder builder = new StringBuilder();
-        if (!HuaweiRadarConfig.FAILURE_CAUSE.isEmpty()) {
-            for (String failureType : HuaweiRadarConfig.FAILURE_CAUSE.keySet()) {
-                builder.append(HuaweiRadarConfig.FAILURE_CAUSE.get(failureType));
+        if (!Params.FAILURE_CAUSE.isEmpty()) {
+            for (String failureType : Params.FAILURE_CAUSE.keySet()) {
+                builder.append(Params.FAILURE_CAUSE.get(failureType));
                 builder.append(",");
             }
         }
