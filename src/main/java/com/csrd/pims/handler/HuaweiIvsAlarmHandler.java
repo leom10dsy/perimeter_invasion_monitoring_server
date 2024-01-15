@@ -254,7 +254,7 @@ public class HuaweiIvsAlarmHandler {
                     .setAlarmType(CollectionUtils.isEmpty(hwMMWTargetData) ? "石块,其他异物" : "人员");
         }
 
-        if (Params.LATEST_ALARM_TIME.containsKey(eventPrefix)) {
+        if (!Params.LATEST_ALARM_TIME.containsKey(eventPrefix)) {
             log.info("=====> scheduled task has removed key!!!");
             return;
         }
