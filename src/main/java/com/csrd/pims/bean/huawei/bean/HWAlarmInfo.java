@@ -17,7 +17,7 @@ public class HWAlarmInfo {
 
     // 事件类型 ivs、nce
     private String alarmType;
-    private int alarmLevel = 0;
+    private int alarmLevel;
     // 报警接收时间
     private Date alarmTime;
     // 报警事件id

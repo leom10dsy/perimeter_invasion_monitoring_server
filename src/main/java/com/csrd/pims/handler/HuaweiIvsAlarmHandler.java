@@ -161,10 +161,11 @@ public class HuaweiIvsAlarmHandler {
             HWAlarmInfo hwAlarmInfo = Params.LATEST_ALARM_TIME.get(eventPrefix);
             if (!hwAlarmInfo.isAddDownloadQueue()) {
                 // 没有添加下载视频队列
-                String videoPath = tkConfigParam.getSftp().getVideoPath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN);
-                huaweiIvsMediaService.addDownloadAlarmIvsVideoQueue(huaweiCamera.getNumber(),
-                        hwAlarmInfo.getEventId(),
-                        videoPath, alarmTime);
+
+                //String videoPath = tkConfigParam.getSftp().getVideoPath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN);
+                String alarmVideo = tkAlarmInfo.getAlarmVideo();
+                String videoPath = alarmVideo.substring(0, alarmVideo.lastIndexOf("/") + 1);
+                huaweiIvsMediaService.addDownloadAlarmIvsVideoQueue(huaweiCamera.getNumber(), hwAlarmInfo.getEventId(), videoPath, alarmTime);
                 hwAlarmInfo.setAddDownloadQueue(true);
             }
         }
@@ -268,7 +269,7 @@ public class HuaweiIvsAlarmHandler {
         }
         // 空指针 LATEST_ALARM_TIME.size = 0 定时任务remove了key
         HWAlarmInfo hwAlarmInfo = Params.LATEST_ALARM_TIME.get(eventPrefix);
-        int alarmStateCalc = alarmStateCalc(eventPrefix, alarmTime);
+        int alarmStateCalc = alarmStateCalc(eventPrefix);
         hwAlarmInfo.setAlarmState(alarmStateCalc);
         Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
         tkAlarmInfo.setAlarmState(alarmStateCalc);
@@ -314,22 +315,14 @@ public class HuaweiIvsAlarmHandler {
      *
      * @return
      */
-    private int alarmStateCalc(String latestKey, Date currentDate) {
+    private int alarmStateCalc(String latestKey) {
         if (Params.LATEST_ALARM_TIME.get(latestKey).getAlarmLevel() == 1) {
             // 新的报警事件
             log.info("=====> 新的报警");
             return AlarmStateEnum.START.getValue();
         } else {
-            long between = DateUtil.between(Params.LATEST_ALARM_TIME.get(latestKey).getAlarmTime(), currentDate, DateUnit.SECOND);
-            if (between <= 10) {
-                // 报警进行中，不处理
-                log.info("=====> 报警进行中");
-                return AlarmStateEnum.MIDDLE.getValue();
-            } else {
-                log.info("=====> 上个报警事件结束");
-                Params.LATEST_ALARM_TIME.remove(latestKey);
-                return AlarmStateEnum.CLOSE.getValue();
-            }
+            log.info("=====> 报警进行中");
+            return AlarmStateEnum.MIDDLE.getValue();
         }
     }
 
@@ -405,6 +398,7 @@ public class HuaweiIvsAlarmHandler {
             hwAlarmInfo.setAlarmTime(alarmTime);
             hwAlarmInfo.setAlarmState(AlarmStateEnum.START.getValue());
             hwAlarmInfo.setAddDownloadQueue(false);
+            hwAlarmInfo.setAlarmLevel(0);
             Params.LATEST_ALARM_TIME.put(ivsEventPrefix, hwAlarmInfo);
         } else {
             hwAlarmInfo = Params.LATEST_ALARM_TIME.get(ivsEventPrefix);
