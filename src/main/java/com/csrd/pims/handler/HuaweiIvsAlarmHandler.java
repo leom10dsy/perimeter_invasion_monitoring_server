@@ -157,7 +157,7 @@ public class HuaweiIvsAlarmHandler {
         }
 
         //添加视频
-        String videoPath = tkConfigParam.getSftp().getImagePath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN);
+        String videoPath = tkConfigParam.getSftp().getVideoPath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN);
         huaweiIvsMediaService.addDownloadAlarmIvsVideoQueue(huaweiCamera.getNumber(),
                 tkConfigParam.getBase().getCompanyName() + "_" + tkConfigParam.getBase().getCompanyCode() + "_" + tkConfigParam.getBase().getIvsAreaCode() + "_" + notificationObject.getTriggerTime(),
                 videoPath, alarmTime);
