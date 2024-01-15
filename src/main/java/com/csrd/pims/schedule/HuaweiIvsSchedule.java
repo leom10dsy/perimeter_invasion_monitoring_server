@@ -48,7 +48,7 @@ public class HuaweiIvsSchedule {
     private TkConfigParam tkConfigParam;
 
 
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void huaweiIvsKeepLive() {
 
         if (huaweiConfigParam.getIvs().isEnable() && Params.ivsCookie != null) {
@@ -165,14 +165,11 @@ public class HuaweiIvsSchedule {
         }
 
         // ivs状态
-        if (Params.ivsCookie == null) {
+        boolean pingIvs = NetUtil.ping(huaweiConfigParam.getIvs().getIp(), 3000);
+        if (!pingIvs) {
             builder.append("4,");
-        } else {
-            boolean pingIvs = NetUtil.ping(huaweiConfigParam.getIvs().getIp(), 3000);
-            if (!pingIvs) {
-                builder.append("4,");
-            }
         }
+
         String strAppend = builder.toString();
         String failureCause = "0";
         if (strAppend.endsWith(",")) {
