@@ -325,7 +325,6 @@ public class HuaweiIvsServiceImpl implements HuaweiIvsService {
             String localImgName = mediaService.capturePic(huaweiCamera.getNumber());
             String localImgPath = "D:\\img\\test";
             String localImg = localImgPath + File.separator + localImgName;
-            log.info("alarmImg:{},localImg:{}", tkAlarmInfo.getAlarmImage(), localImg);
             String alarmImage = mediaService.uploadImg(tkAlarmInfo, localImg);
             String companyAlarmId = DateUtil.format(lastEndTime, DatePattern.PURE_DATETIME_MS_PATTERN) + "_" + tkConfigParam.getBase().getCompanyCode();
             tkAlarmInfo.setCompanyAlarmId(companyAlarmId)
