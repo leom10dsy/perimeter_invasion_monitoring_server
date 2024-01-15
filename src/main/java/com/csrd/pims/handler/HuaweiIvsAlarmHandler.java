@@ -254,11 +254,11 @@ public class HuaweiIvsAlarmHandler {
                     .setAlarmType(CollectionUtils.isEmpty(hwMMWTargetData) ? "石块,其他异物" : "人员");
         }
 
-        // 空指针 LATEST_ALARM_TIME.size = 0 定时任务remove了key
-        if (!Params.LATEST_ALARM_TIME.containsKey(eventPrefix)){
-            log.warn("=====> Scheduled task has removed alarm!!");
+        if (Params.LATEST_ALARM_TIME.containsKey(eventPrefix)) {
+            log.info("=====> scheduled task has removed key!!!");
             return;
         }
+        // 空指针 LATEST_ALARM_TIME.size = 0 定时任务remove了key
         HWAlarmInfo hwAlarmInfo = Params.LATEST_ALARM_TIME.get(eventPrefix);
         int alarmStateCalc = alarmStateCalc(eventPrefix, alarmTime);
         hwAlarmInfo.setAlarmState(alarmStateCalc);
@@ -293,8 +293,9 @@ public class HuaweiIvsAlarmHandler {
                     ivsService.pushCloseAlarm(eventId, alarmTime);
                 } catch (Exception e) {
                     log.error("=====> 推送结束报警错误！");
+                } finally {
+                    Params.LATEST_ALARM_TIME.remove(eventPrefix);
                 }
-                Params.LATEST_ALARM_TIME.remove(eventPrefix);
             }
         }
     }

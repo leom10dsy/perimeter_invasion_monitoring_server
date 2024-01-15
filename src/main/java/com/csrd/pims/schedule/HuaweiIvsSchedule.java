@@ -1,5 +1,6 @@
 package com.csrd.pims.schedule;
 
+import cn.hutool.core.net.NetUtil;
 import com.csrd.pims.amqp.AmqpSender;
 import com.csrd.pims.amqp.tk.DefenceAreaPojo;
 import com.csrd.pims.amqp.tk.DeviceStatePojo;
@@ -47,7 +48,7 @@ public class HuaweiIvsSchedule {
     private TkConfigParam tkConfigParam;
 
 
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void huaweiIvsKeepLive() {
 
         if (huaweiConfigParam.getIvs().isEnable() && Params.ivsCookie != null) {
@@ -77,7 +78,6 @@ public class HuaweiIvsSchedule {
 
                     }
 
-                } else {
                 }
             } catch (Exception e) {
                 Params.ivsCookie = null;
@@ -147,16 +147,25 @@ public class HuaweiIvsSchedule {
         defenceArea.setAreaCode(tkConfigParam.getBase().getIvsAreaCode());
         defenceArea.setAreaState(Params.IVS_ALARM_ENABLE.get() ? 1 : 0);
         deviceStatePojo.setArea(Collections.singletonList(defenceArea));
-
-
+        // 故障原因  0 无异常 1激光雷达故障 2毫米波雷达故障 3摄像头故障 4盒子故障 5 震动光纤多个使用,分割,初始化0
         StringBuilder builder = new StringBuilder();
-        if (!Params.FAILURE_CAUSE.isEmpty()) {
-            for (String failureType : Params.FAILURE_CAUSE.keySet()) {
-                builder.append(Params.FAILURE_CAUSE.get(failureType));
-                builder.append(",");
-            }
+        // 雷达状态
+        boolean pingRadar = NetUtil.ping(huaweiConfigParam.getRadar().getIp(), 3000);
+        if (!pingRadar) {
+            builder.append("2,");
         }
-        builder.append(Params.ivsCookie == null ? "3," : "");
+        // 摄像机状态
+        if (!Params.huaweiCameras.isEmpty()) {
+            boolean pingCamera = NetUtil.ping(Params.huaweiCameras.get(0).getCameraIp(), 3000);
+            if (!pingCamera) {
+                builder.append("3,");
+            }
+        } else {
+            builder.append("3,");
+        }
+
+        // ivs状态
+        builder.append(Params.ivsCookie == null ? "4," : "");
         String strAppend = builder.toString();
         String failureCause = "0";
         if (strAppend.endsWith(",")) {
@@ -166,7 +175,7 @@ public class HuaweiIvsSchedule {
         deviceStatePojo.setDeviceState(failureCause.equals("0") ? 1 : 0);
         String message = GsonUtil.toJson(deviceStatePojo);
         log.info("=====> 发送设备状态！deviceStateData:{}", message);
-        amqpSender.sendByRouter(tkConfigParam.getAmq().getTestMonitorPlatform(), tkConfigParam.getAmq().getStateMergeRoutingKey(), GsonUtil.toJson(message));
+        amqpSender.sendByRouter(tkConfigParam.getAmq().getTestMonitorPlatform(), tkConfigParam.getAmq().getStateMergeRoutingKey(), message);
     }
 
 }
