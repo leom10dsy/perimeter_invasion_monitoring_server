@@ -27,4 +27,5 @@ public class HWAlarmInfo {
      * 参考{@link AlarmStateEnum}
      */
     private int alarmState;
+    private boolean isAddDownloadQueue;
 }

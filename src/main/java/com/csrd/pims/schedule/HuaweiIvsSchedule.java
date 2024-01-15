@@ -123,7 +123,7 @@ public class HuaweiIvsSchedule {
                 for (HuaweiVideoQueue queue : queues) {
                     mediaService.downloadIvsVideo(
                             queue.getCameraNumber(),
-                            queue.getCompanyAlarmId(),
+                            queue.getAlarmEventId(),
                             queue.getAlarmVideo(),
                             queue.getAlarmTime()
                     );

@@ -86,9 +86,9 @@ public class HuaweiIvsMediaServiceImpl implements HuaweiIvsMediaService {
     }
 
     @Override
-    public void addDownloadAlarmIvsVideoQueue(String cameraNumber, String companyAlarmId, String alarmVideoPath, Date alarmTime) {
+    public void addDownloadAlarmIvsVideoQueue(String cameraNumber, String alarmEventId, String alarmVideoPath, Date alarmTime) {
         alarmTime = DateUtil.offsetHour(alarmTime, 8);
-        HuaweiVideoQueue queue = new HuaweiVideoQueue(companyAlarmId, cameraNumber, alarmTime, alarmVideoPath, 0);
+        HuaweiVideoQueue queue = new HuaweiVideoQueue(alarmEventId, cameraNumber, alarmTime, alarmVideoPath, 0);
         // 保存数据库
         queue.setIsDownload(0);
         huaweiVideoQueueMapper.insert(queue);
@@ -140,7 +140,7 @@ public class HuaweiIvsMediaServiceImpl implements HuaweiIvsMediaService {
                             }
                         }
                         HuaweiVideoQueue queue = new HuaweiVideoQueue();
-                        queue.setCompanyAlarmId(alarmEventId);
+                        queue.setAlarmEventId(alarmEventId);
                         queue.setIsDownload(1);
                         huaweiVideoQueueMapper.updateById(queue);
                     }

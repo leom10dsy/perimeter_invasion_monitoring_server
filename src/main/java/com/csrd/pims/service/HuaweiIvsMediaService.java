@@ -30,7 +30,7 @@ public interface HuaweiIvsMediaService {
      * @param alarmGuid    报警ip
      * @param alarmTime    报警时间
      */
-    void addDownloadAlarmIvsVideoQueue(String cameraNumber, String alarmGuid, String alarmVideoPath, Date alarmTime);
+    void addDownloadAlarmIvsVideoQueue(String cameraNumber, String alarmEventId, String alarmVideoPath, Date alarmTime);
 
     String uploadImg(TKAlarmInfo alarmInfo, String LocalFileName);
 }

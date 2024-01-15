@@ -18,8 +18,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class HuaweiVideoQueue {
 
-    @TableId("companyAlarmId")
-    private String companyAlarmId;
+    @TableId("alarmEventId")
+    private String alarmEventId;
 
     @TableField("cameraNumber")
     private String cameraNumber;
