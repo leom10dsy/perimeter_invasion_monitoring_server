@@ -95,6 +95,7 @@ public class HuaweiIvsAlarmHandler {
         }
 
         Date alarmTime = DateUtil.parse(notificationObject.getTriggerTime(), DatePattern.PURE_DATETIME_MS_PATTERN);
+        log.info("告警时间：{}", alarmTime);
 
         // 2022-04-15 15:49:00
         String companyAlarmDate = DateUtil.format(alarmTime, DatePattern.NORM_DATETIME_PATTERN);
@@ -164,7 +165,7 @@ public class HuaweiIvsAlarmHandler {
 
                 //String videoPath = tkConfigParam.getSftp().getVideoPath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN);
                 String alarmVideo = tkAlarmInfo.getAlarmVideo();
-                String videoPath = alarmVideo.substring(0, alarmVideo.lastIndexOf("/") + 1);
+                String videoPath = "/home" + alarmVideo.substring(0, alarmVideo.lastIndexOf("/") + 1);
                 huaweiIvsMediaService.addDownloadAlarmIvsVideoQueue(huaweiCamera.getNumber(), hwAlarmInfo.getEventId(), videoPath, alarmTime);
                 hwAlarmInfo.setAddDownloadQueue(true);
             }
