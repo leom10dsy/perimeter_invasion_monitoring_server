@@ -86,7 +86,7 @@ public class RealVideoImagesUtil {
                     }
                 }
                 // 流媒体输出地址，分辨率（长，高），是否录制音频（0:不录制/1:录制）
-                recorder = new FFmpegFrameRecorder(filePath, 350, 240, 1);
+                recorder = new FFmpegFrameRecorder(filePath, 1280, 720, 0);
                 recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
 //                recorder.setPixelFormat(avutil.AV_PIX_FMT_YUV420P);
                 // 降低编码延时
@@ -204,7 +204,7 @@ public class RealVideoImagesUtil {
         String path = "D://files/video/";
         String imgPath = "D://files/img/";
         String streamUrl =
-                "rtsp://10.168.2.199:554/01167548417785100102?DstCode=01&ServiceType=1&ClientType=1&StreamID=1&SrcTP=2&DstTP=2&SrcPP=1&DstPP=1&MediaTransMode=0&BroadcastType=0&SV=1&Token=G9R0XNYsp2hkMKjZrKRaRnoK2qJxaxuQEeUia+li170=&"
+                "rtsp://192.168.80.181:554/08120267724140340101?DstCode=01&ServiceType=4&ClientType=1&StreamID=1&SrcTP=2&DstTP=2&SrcPP=1&DstPP=1&MediaTransMode=0&BroadcastType=0&SV=1&TimeSpan=20240115T235859Z-20240115T235904Z&Token=jpg5/Xmg/MrS4CIGjoyG5rFLtxICzgrzCmhY/jbASCg=&Multiplex=LJa9ljw2iyzk7qF1MFh3Tzw76NYyqQYaKlpG7vUFp+U=&"
                 ;
         String streamUrl2 = "rtsp://10.168.2.51:554/onvif/live/2/1";
         final ExecutorService executeChannel1 = Executors.newSingleThreadExecutor();

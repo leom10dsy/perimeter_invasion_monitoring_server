@@ -357,7 +357,7 @@ public class HuaweiIvsAlarmHandler {
         tkAlarmInfo.setAlgorithmCode(tkConfigParam.getBase().getNcealgorithmCode());
         tkAlarmInfo.setAlarmEventId(hwAlarmInfo.getEventId());
         tkAlarmInfo.setAreaCode(tkConfigParam.getBase().getNceAreaCode());
-
+        tkAlarmInfo.setIsPushAlarm(0);
         tkAlarmInfo.setAlarmImage(tkConfigParam.getAmq().getImagePath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN)
                 + "/" + tkConfigParam.getBase().getCompanyName() + "_" + tkConfigParam.getBase().getNcealgorithmCode() + "_" + tkConfigParam.getBase().getNceAreaCode() + "_" + notificationObject.getTriggerTime() + ".jpg");
         tkAlarmInfo.setAlarmVideo(tkConfigParam.getAmq().getVideoPath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN)
@@ -409,6 +409,7 @@ public class HuaweiIvsAlarmHandler {
         // 设置报警参数
         tkAlarmInfo.setAlarmEventId(hwAlarmInfo.getEventId());
         tkAlarmInfo.setAreaCode(tkConfigParam.getBase().getIvsAreaCode());
+        tkAlarmInfo.setIsPushAlarm(0);
 
         tkAlarmInfo.setAlarmImage(tkConfigParam.getAmq().getImagePath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN)
                 + "/" + tkConfigParam.getBase().getCompanyName() + "_" + tkConfigParam.getBase().getIvsalgorithmCode() + "_" + tkConfigParam.getBase().getIvsAreaCode() + "_" + notificationObject.getTriggerTime() + ".jpg");

@@ -1,5 +1,6 @@
 package com.csrd.pims.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateTime;
@@ -315,10 +316,17 @@ public class HuaweiIvsServiceImpl implements HuaweiIvsService {
     public synchronized void pushCloseAlarm(String eventId, Date currentDate) {
         // 避免主键重复
         Date lastEndTime = DateUtil.offsetMillisecond(currentDate, -10);
+        LambdaQueryWrapper<TKAlarmInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(TKAlarmInfo::getAlarmEventId, eventId);
+        List<TKAlarmInfo> tkAlarmInfos = tkAlarmMapper.selectList(wrapper);
+        TKAlarmInfo tkAlarmInfo;
+        if (CollectionUtil.isNotEmpty(tkAlarmInfos)) {
+            tkAlarmInfo = tkAlarmInfos.get(0);
+        } else {
+            tkAlarmInfo = new TKAlarmInfo()
+                    .setAlarmEventId(eventId);
+        }
         try {
-            LambdaQueryWrapper<TKAlarmInfo> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(TKAlarmInfo::getAlarmEventId, eventId);
-            TKAlarmInfo tkAlarmInfo = tkAlarmMapper.selectList(wrapper).get(0);
             // 抓拍、上传图片
             HuaweiCamera huaweiCamera = Params.huaweiCameras.get(0);
             // 本地文件名
@@ -332,20 +340,23 @@ public class HuaweiIvsServiceImpl implements HuaweiIvsService {
                     .setAlarmImage(alarmImage)
                     .setIsPushAlarm(0)
                     .setCompanyAlarmDate(DateUtil.format(lastEndTime, DatePattern.NORM_DATETIME_PATTERN));
+        } catch (Exception e) {
+            log.error("=====> 图片上传异常,eventId:{}", eventId);
+            e.printStackTrace();
+        } finally {
             tkAlarmMapper.insert(tkAlarmInfo);
+        }
+        try {
             String message = GsonUtil.toJson(tkAlarmInfo);
             log.info("=====> 推送结束报警，alarmData：{}", message);
-            try {
-                amqpSender.sendByRouter(tkConfigParam.getAmq().getTestMonitorPlatform(), tkConfigParam.getAmq().getAlarmMergeRoutingKey(), message);
-            } catch (Exception e) {
-                log.error("=====> 推送结束报警异常！,{}", e.getMessage());
-                return;
-            }
-            tkAlarmInfo.setIsPushAlarm(1);
-            tkAlarmMapper.updateById(tkAlarmInfo);
+            amqpSender.sendByRouter(tkConfigParam.getAmq().getTestMonitorPlatform(), tkConfigParam.getAmq().getAlarmMergeRoutingKey(), message);
         } catch (Exception e) {
-            log.error("=====> 推送结束报警失败！cause：{}", e.getMessage());
+            log.error("=====> 推送结束报警异常！,{}", e.getMessage());
+            return;
         }
+        tkAlarmInfo.setIsPushAlarm(1);
+        tkAlarmMapper.updateById(tkAlarmInfo);
+
     }
 
 
