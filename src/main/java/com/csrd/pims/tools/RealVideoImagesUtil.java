@@ -1,5 +1,6 @@
 package com.csrd.pims.tools;
 
+import com.csrd.pims.bean.huawei.param.TimeSpan;
 import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.ffmpeg.global.avcodec;
 import org.bytedeco.ffmpeg.global.avutil;
@@ -10,11 +11,10 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -200,38 +200,25 @@ public class RealVideoImagesUtil {
     }
 
     public static void main(String[] args) {
-        //getVideoStream();
-        String path = "D://files/video/";
-        String imgPath = "D://files/img/";
-        String streamUrl =
-                "rtsp://192.168.80.181:554/08120267724140340101?DstCode=01&ServiceType=4&ClientType=1&StreamID=1&SrcTP=2&DstTP=2&SrcPP=1&DstPP=1&MediaTransMode=0&BroadcastType=0&SV=1&TimeSpan=20240115T235859Z-20240115T235904Z&Token=jpg5/Xmg/MrS4CIGjoyG5rFLtxICzgrzCmhY/jbASCg=&Multiplex=LJa9ljw2iyzk7qF1MFh3Tzw76NYyqQYaKlpG7vUFp+U=&"
-                ;
-        String streamUrl2 = "rtsp://10.168.2.51:554/onvif/live/2/1";
-        final ExecutorService executeChannel1 = Executors.newSingleThreadExecutor();
-        //final ExecutorService executeChannel2 = Executors.newSingleThreadExecutor();
-        List<Thread> list1 = new LinkedList<>();
-        RealVideoImagesUtil realVideoImagesUtil1 = new RealVideoImagesUtil();
-        for (int i = 0; i < 1; i++) {
-            String uuid = new SnowFlakeGenerateIdUtil(0L, 30L).generateNextId();
-            Thread thread1 = new Thread(() -> {
-                try {
-                    realVideoImagesUtil1.getStreamScreenshot(path + uuid + "_channel1.mp4", null, streamUrl);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-            list1.add(thread1);
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        for (Thread thread : list1) {
-            executeChannel1.execute(thread);
-            System.out.println("开始执行---------------------------");
-        }
-        executeChannel1.shutdown();
+        TimeSpan timeSpan = new TimeSpan();
+        Date alarmTime = new Date();
+        Calendar calendarStart = Calendar.getInstance();
+        calendarStart.setTime(alarmTime);
+        calendarStart.add(Calendar.HOUR, -8);
+        calendarStart.add(Calendar.SECOND, -20);
+
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.setTime(alarmTime);
+        calendarEnd.add(Calendar.HOUR, -8);
+        calendarEnd.add(Calendar.SECOND, -15);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String timeStart = sdf.format(calendarStart.getTime());
+
+        String timeEnd = sdf.format(calendarEnd.getTime());
+        timeSpan.setStartTime(timeStart);
+        timeSpan.setEndTime(timeEnd);
+        System.out.println(timeStart);
+        System.out.println(timeEnd);
 
     }
 
