@@ -166,7 +166,8 @@ public class HuaweiIvsAlarmHandler {
                 //String videoPath = tkConfigParam.getSftp().getVideoPath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN);
                 String alarmVideo = tkAlarmInfo.getAlarmVideo();
                 String videoPath = "/home" + alarmVideo.substring(0, alarmVideo.lastIndexOf("/") + 1);
-                huaweiIvsMediaService.addDownloadAlarmIvsVideoQueue(huaweiCamera.getNumber(), hwAlarmInfo.getEventId(), videoPath, alarmTime);
+                String uploadVideoName = alarmVideo.substring(alarmVideo.lastIndexOf("/") + 1);
+                huaweiIvsMediaService.addDownloadAlarmIvsVideoQueue(huaweiCamera.getNumber(), hwAlarmInfo.getEventId(), videoPath, alarmTime, uploadVideoName);
                 hwAlarmInfo.setAddDownloadQueue(true);
             }
         }

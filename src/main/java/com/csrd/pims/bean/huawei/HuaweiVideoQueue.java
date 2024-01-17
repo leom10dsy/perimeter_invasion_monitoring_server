@@ -35,5 +35,8 @@ public class HuaweiVideoQueue {
     @TableField("isDownload")
     private int isDownload;
 
+    @TableField("uploadVideoName")
+    private String uploadVideoName;
+
 
 }

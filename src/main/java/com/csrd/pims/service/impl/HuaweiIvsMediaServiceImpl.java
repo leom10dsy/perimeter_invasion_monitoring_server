@@ -88,8 +88,8 @@ public class HuaweiIvsMediaServiceImpl implements HuaweiIvsMediaService {
     }
 
     @Override
-    public void addDownloadAlarmIvsVideoQueue(String cameraNumber, String alarmEventId, String alarmVideoPath, Date alarmTime) {
-        HuaweiVideoQueue queue = new HuaweiVideoQueue(alarmEventId, cameraNumber, alarmTime, alarmVideoPath, 0);
+    public void addDownloadAlarmIvsVideoQueue(String cameraNumber, String alarmEventId, String alarmVideoPath, Date alarmTime, String uploadVideoName) {
+        HuaweiVideoQueue queue = new HuaweiVideoQueue(alarmEventId, cameraNumber, alarmTime, alarmVideoPath, 0, uploadVideoName);
         // 保存数据库
         queue.setIsDownload(0);
         huaweiVideoQueueMapper.insert(queue);
@@ -156,7 +156,7 @@ public class HuaweiIvsMediaServiceImpl implements HuaweiIvsMediaService {
     }
 
     @Override
-    public synchronized void downloadIvsVideoByFFmpeg(String cameraNumber, String alarmEventId, String uploadVideoPath, Date alarmTime) {
+    public synchronized void downloadIvsVideoByFFmpeg(String cameraNumber, String alarmEventId, String uploadVideoPath, Date alarmTime,String uploadVideoName) {
         String videoRtspUrl = huaweiIvsService.getVideoRtspUrl(cameraNumber, alarmTime, 3);
 
         if (videoRtspUrl == null) {
@@ -175,11 +175,11 @@ public class HuaweiIvsMediaServiceImpl implements HuaweiIvsMediaService {
                 log.info("=====> 创建视频文件夹失败");
             }
         }
-        ProcessBuilder extractBuilder = new ProcessBuilder("ffmpeg", "-timeout", "100000", "-ss", "0", "-y", "-rtsp_transport", " tcp", "-i",
+        ProcessBuilder extractBuilder = new ProcessBuilder("ffmpeg", "-timeout", "1000000", "-ss", "0", "-y", "-rtsp_transport", " tcp", "-i",
                 videoRtspUrl, "-b:v", "1000k", "-vcodec", "copy", "-f", "mp4", targetFileName);
         try {
             Process process = extractBuilder.inheritIO().start();
-            if (!process.waitFor(10, TimeUnit.SECONDS)) {
+            if (!process.waitFor(15, TimeUnit.SECONDS)) {
                 log.error("Process did not finish within the timeout. Forcefully destroying...");
                 process.destroy();
                 return;
@@ -201,7 +201,7 @@ public class HuaweiIvsMediaServiceImpl implements HuaweiIvsMediaService {
             try {
                 InputStream inputStream = Files.newInputStream(targetFile.toPath());
 
-                boolean upload = sftpUtils.upload(uploadVideoPath, alarmEventId + ".mp4", inputStream);
+                boolean upload = sftpUtils.upload(uploadVideoPath, uploadVideoName, inputStream);
                 if (upload) {
                     inputStream.close();
                     if (Params.LOCAL_DELETE_FLAG) {

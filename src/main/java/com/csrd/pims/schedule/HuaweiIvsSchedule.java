@@ -125,7 +125,8 @@ public class HuaweiIvsSchedule {
                             queue.getCameraNumber(),
                             queue.getAlarmEventId(),
                             queue.getAlarmVideo(),
-                            queue.getAlarmTime()
+                            queue.getAlarmTime(),
+                            queue.getUploadVideoName()
                     );
                 }
             }
