@@ -95,6 +95,7 @@ public class HuaweiIvsAlarmHandler {
         }
 
         Date alarmTime = DateUtil.parse(notificationObject.getTriggerTime(), DatePattern.PURE_DATETIME_MS_PATTERN);
+        log.info("告警时间：{}", alarmTime);
 
         // 2022-04-15 15:49:00
         String companyAlarmDate = DateUtil.format(alarmTime, DatePattern.NORM_DATETIME_PATTERN);
@@ -260,7 +261,7 @@ public class HuaweiIvsAlarmHandler {
         }
         // 空指针 LATEST_ALARM_TIME.size = 0 定时任务remove了key
         HWAlarmInfo hwAlarmInfo = Params.LATEST_ALARM_TIME.get(eventPrefix);
-        int alarmStateCalc = alarmStateCalc(eventPrefix, alarmTime);
+        int alarmStateCalc = alarmStateCalc(eventPrefix);
         hwAlarmInfo.setAlarmState(alarmStateCalc);
         Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
         tkAlarmInfo.setAlarmState(alarmStateCalc);
@@ -306,22 +307,14 @@ public class HuaweiIvsAlarmHandler {
      *
      * @return
      */
-    private int alarmStateCalc(String latestKey, Date currentDate) {
+    private int alarmStateCalc(String latestKey) {
         if (Params.LATEST_ALARM_TIME.get(latestKey).getAlarmLevel() == 1) {
             // 新的报警事件
             log.info("=====> 新的报警");
             return AlarmStateEnum.START.getValue();
         } else {
-            long between = DateUtil.between(Params.LATEST_ALARM_TIME.get(latestKey).getAlarmTime(), currentDate, DateUnit.SECOND);
-            if (between <= 10) {
-                // 报警进行中，不处理
-                log.info("=====> 报警进行中");
-                return AlarmStateEnum.MIDDLE.getValue();
-            } else {
-                log.info("=====> 上个报警事件结束");
-                Params.LATEST_ALARM_TIME.remove(latestKey);
-                return AlarmStateEnum.CLOSE.getValue();
-            }
+            log.info("=====> 报警进行中");
+            return AlarmStateEnum.MIDDLE.getValue();
         }
     }
 
@@ -354,7 +347,7 @@ public class HuaweiIvsAlarmHandler {
         tkAlarmInfo.setAlgorithmCode(tkConfigParam.getBase().getNcealgorithmCode());
         tkAlarmInfo.setAlarmEventId(hwAlarmInfo.getEventId());
         tkAlarmInfo.setAreaCode(tkConfigParam.getBase().getNceAreaCode());
-
+        tkAlarmInfo.setIsPushAlarm(0);
         tkAlarmInfo.setAlarmImage(tkConfigParam.getAmq().getImagePath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN)
                 + "/" + tkConfigParam.getBase().getCompanyName() + "_" + tkConfigParam.getBase().getNcealgorithmCode() + "_" + tkConfigParam.getBase().getNceAreaCode() + "_" + notificationObject.getTriggerTime() + ".jpg");
         tkAlarmInfo.setAlarmVideo(tkConfigParam.getAmq().getVideoPath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN)
@@ -395,6 +388,7 @@ public class HuaweiIvsAlarmHandler {
             hwAlarmInfo.setAlarmType("ivs");
             hwAlarmInfo.setAlarmTime(alarmTime);
             hwAlarmInfo.setAlarmState(AlarmStateEnum.START.getValue());
+            hwAlarmInfo.setAlarmLevel(0);
             Params.LATEST_ALARM_TIME.put(ivsEventPrefix, hwAlarmInfo);
         } else {
             hwAlarmInfo = Params.LATEST_ALARM_TIME.get(ivsEventPrefix);
@@ -404,6 +398,7 @@ public class HuaweiIvsAlarmHandler {
         // 设置报警参数
         tkAlarmInfo.setAlarmEventId(hwAlarmInfo.getEventId());
         tkAlarmInfo.setAreaCode(tkConfigParam.getBase().getIvsAreaCode());
+        tkAlarmInfo.setIsPushAlarm(0);
 
         tkAlarmInfo.setAlarmImage(tkConfigParam.getAmq().getImagePath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN)
                 + "/" + tkConfigParam.getBase().getCompanyName() + "_" + tkConfigParam.getBase().getIvsalgorithmCode() + "_" + tkConfigParam.getBase().getIvsAreaCode() + "_" + notificationObject.getTriggerTime() + ".jpg");

@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  **/
 public class Params {
 
-    // 本地媒体储存路径
+    // 本地媒体储存路径 D:\huawei\alarmfile\
     public static String LOCAL_STORAGE_PATH;
 
     public static Boolean LOCAL_DELETE_FLAG;

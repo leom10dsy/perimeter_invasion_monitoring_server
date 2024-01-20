@@ -2,6 +2,7 @@ package com.csrd.pims.service.impl;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import com.csrd.pims.amqp.tk.TKAlarmInfo;
 import com.csrd.pims.bean.config.HuaweiConfigParam;
@@ -28,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -194,12 +196,12 @@ public class HuaweiIvsMediaServiceImpl implements HuaweiIvsMediaService {
                 InputStream inputStream = Files.newInputStream(targetFile.toPath());
                 try {
                     String[] split = alarmInfo.getAlarmImage().split("/");
-                    String imgPath = tkConfigParam.getSftp().getImagePath() + tkConfigParam.getBase().getCompanyName() +"/"+ DateUtil.format(new Date(), DatePattern.PURE_DATE_PATTERN) + "/";
+                    String imgPath = tkConfigParam.getSftp().getImagePath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(new Date(), DatePattern.PURE_DATE_PATTERN) + "/";
                     if (split.length <= 1) {
                         split = alarmInfo.getAlarmImage().split("\\\\");
                         imgPath = alarmInfo.getAlarmImage().substring(0, alarmInfo.getAlarmImage().lastIndexOf("\\") + 1);
                     }
-                    String imageName = split[split.length - 1].replace(".jpg","-3.jpg");
+                    String imageName = split[split.length - 1].replace(".jpg", "-3.jpg");
                     sftpUtils.upload(imgPath, imageName, inputStream);
                     endImage = (imgPath + imageName).replace("/home", "");
                 } catch (SftpException e) {

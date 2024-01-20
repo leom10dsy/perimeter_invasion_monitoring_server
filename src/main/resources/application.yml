@@ -1,22 +1,22 @@
 server:
   #  服务器端口号配置
-  port: 9097
+  port: 9098
   servlet:
     context-path: /huaweifront
 
 spring:
   #    rabbitMq配置
   rabbitmq:
-    host: 127.0.0.1
+    host: 192.168.80.100
     port: 5672
     username: admin
-    password: CSRD_PASS@2023user
+    password: tky3306!@#
     virtual-host: /
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/railway_dj?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.80.180:3306/railway_dj?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: root
+    password: root@csrd123
     type: com.alibaba.druid.pool.DruidDataSource
     # 初始化大小，最小，最大
     initial-size: 10
@@ -54,15 +54,15 @@ sysconfig:
   local-media-path: D:\huawei\alarmfile
   local-delete-flag: false #是否删除本地文件
   local:
-    ip: 10.168.2.205
+    ip: 192.168.80.180
 huawei-config:
   ivs:
     enable: true
-    number: bafb3c33cae947afad2cc066007f36f8
-    ip: 172.10.60.6
+    number: 8c0e37f1a15e47bdaebef44707d8bb7c
+    ip: 192.168.80.181
     port: 18531
-    username: cdtest
-    password: HuaWei@123
+    username: testPK
+    password: HuaWei@1234
     download: false # 是否进行视频下载
   nce:
     enable: false
@@ -79,11 +79,11 @@ huawei-config:
     #是否只支持单nce接受报警
     isSingle: false
   radar:
-    enable: false
-    ip: 172.10.60.16
+    enable: true
+    ip: 192.168.80.183
     port: 8899
     username: admin
-    password: HuaWei@123
+    password: admin-L1
 tk:
   base:
     companyCode: 102
@@ -107,12 +107,12 @@ tk:
     nce-camera-device-id: 2 #摄像机设备编号
   # 铁科sftp设置，用于上传文件，华为同事与铁科交涉后获取
   sftp:
-    username: root
-    password: root
-    host: 127.0.0.1
+    username: tkydzs
+    password: Dj#3036q99
+    host: 192.168.80.100
     port: 22
-    videoPath: /home/tky/video/
-    imagePath: /home/tky/image/
+    videoPath: /home/tkydzs/video/
+    imagePath: /home/tkydzs/image/
   amq:
     # 交换机
     test-monitor-platform: test_monitor_platform #交换机（Exchange）
@@ -134,5 +134,5 @@ tk:
     command_fanout_queue: HW_COMMAND_QUEUE
 
     # 上传地址
-    videoPath: /home/tky/video/
-    imagePath: /home/tky/image/
+    videoPath: /tkydzs/video/
+    imagePath: /tkydzs/image/
