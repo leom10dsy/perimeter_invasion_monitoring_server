@@ -158,20 +158,10 @@ public class HuaweiIvsAlarmHandler {
         }
 
         //添加视频
-        if (Params.LATEST_ALARM_TIME.containsKey(eventPrefix)) {
-            HWAlarmInfo hwAlarmInfo = Params.LATEST_ALARM_TIME.get(eventPrefix);
-            if (!hwAlarmInfo.isAddDownloadQueue()) {
-                // 没有添加下载视频队列
-
-                //String videoPath = tkConfigParam.getSftp().getVideoPath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN);
-                String alarmVideo = tkAlarmInfo.getAlarmVideo();
-                String videoPath = "/home" + alarmVideo.substring(0, alarmVideo.lastIndexOf("/") + 1);
-                String uploadVideoName = alarmVideo.substring(alarmVideo.lastIndexOf("/") + 1);
-                huaweiIvsMediaService.addDownloadAlarmIvsVideoQueue(huaweiCamera.getNumber(), hwAlarmInfo.getEventId(), videoPath, alarmTime, uploadVideoName);
-                hwAlarmInfo.setAddDownloadQueue(true);
-            }
-        }
-
+        String videoPath = tkConfigParam.getSftp().getImagePath() + tkConfigParam.getBase().getCompanyName() + "/" + DateUtil.format(alarmTime, DatePattern.PURE_DATE_PATTERN);
+        huaweiIvsMediaService.addDownloadAlarmIvsVideoQueue(huaweiCamera.getNumber(),
+                tkConfigParam.getBase().getCompanyName() + "_" + tkConfigParam.getBase().getCompanyCode() + "_" + tkConfigParam.getBase().getIvsAreaCode() + "_" + notificationObject.getTriggerTime(),
+                videoPath, alarmTime);
         //下载图片
         byte[] base64 = Base64.decodeBase64(notificationObject.getBehaviorAnalysisObject().getSubImageList().getSubImageInfoObject().get(0).getData());
 
@@ -338,7 +328,6 @@ public class HuaweiIvsAlarmHandler {
             hwAlarmInfo.setAlarmType("ivs");
             hwAlarmInfo.setAlarmTime(alarmTime);
             hwAlarmInfo.setAlarmState(AlarmStateEnum.START.getValue());
-            hwAlarmInfo.setAddDownloadQueue(false);
             Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
             // 设置报警参数
             tkAlarmInfo.setAlarmEventId(alarmEventId);
@@ -399,7 +388,6 @@ public class HuaweiIvsAlarmHandler {
             hwAlarmInfo.setAlarmType("ivs");
             hwAlarmInfo.setAlarmTime(alarmTime);
             hwAlarmInfo.setAlarmState(AlarmStateEnum.START.getValue());
-            hwAlarmInfo.setAddDownloadQueue(false);
             hwAlarmInfo.setAlarmLevel(0);
             Params.LATEST_ALARM_TIME.put(ivsEventPrefix, hwAlarmInfo);
         } else {
