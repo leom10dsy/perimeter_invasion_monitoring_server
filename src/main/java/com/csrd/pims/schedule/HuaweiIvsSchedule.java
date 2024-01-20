@@ -121,11 +121,12 @@ public class HuaweiIvsSchedule {
             if (queues.size() > 0) {
                 log.info("当前下载数目为：{}", queues.size());
                 for (HuaweiVideoQueue queue : queues) {
-                    mediaService.downloadIvsVideo(
+                    mediaService.downloadIvsVideoByFFmpeg(
                             queue.getCameraNumber(),
-                            queue.getCompanyAlarmId(),
+                            queue.getAlarmEventId(),
                             queue.getAlarmVideo(),
-                            queue.getAlarmTime()
+                            queue.getAlarmTime(),
+                            queue.getUploadVideoName()
                     );
                 }
             }

@@ -88,9 +88,8 @@ public class HuaweiIvsMediaServiceImpl implements HuaweiIvsMediaService {
     }
 
     @Override
-    public void addDownloadAlarmIvsVideoQueue(String cameraNumber, String companyAlarmId, String alarmVideoPath, Date alarmTime) {
-        alarmTime = DateUtil.offsetHour(alarmTime, 8);
-        HuaweiVideoQueue queue = new HuaweiVideoQueue(companyAlarmId, cameraNumber, alarmTime, alarmVideoPath, 0);
+    public void addDownloadAlarmIvsVideoQueue(String cameraNumber, String alarmEventId, String alarmVideoPath, Date alarmTime, String uploadVideoName) {
+        HuaweiVideoQueue queue = new HuaweiVideoQueue(alarmEventId, cameraNumber, alarmTime, alarmVideoPath, 0, uploadVideoName);
         // 保存数据库
         queue.setIsDownload(0);
         huaweiVideoQueueMapper.insert(queue);
@@ -142,7 +141,7 @@ public class HuaweiIvsMediaServiceImpl implements HuaweiIvsMediaService {
                             }
                         }
                         HuaweiVideoQueue queue = new HuaweiVideoQueue();
-                        queue.setCompanyAlarmId(alarmEventId);
+                        queue.setAlarmEventId(alarmEventId);
                         queue.setIsDownload(1);
                         huaweiVideoQueueMapper.updateById(queue);
                     }
@@ -152,6 +151,74 @@ public class HuaweiIvsMediaServiceImpl implements HuaweiIvsMediaService {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public synchronized void downloadIvsVideoByFFmpeg(String cameraNumber, String alarmEventId, String uploadVideoPath, Date alarmTime,String uploadVideoName) {
+        String videoRtspUrl = huaweiIvsService.getVideoRtspUrl(cameraNumber, alarmTime, 3);
+
+        if (videoRtspUrl == null) {
+            return;
+        }
+        String s_recordFileSavePath = Params.LOCAL_STORAGE_PATH + "video" + File.separator;   // 录像保存路径
+        String targetFileName = s_recordFileSavePath + alarmEventId + ".mp4"; // 默认保存路径
+        if (StrUtil.isBlank(videoRtspUrl) || StrUtil.isBlank(targetFileName)) {
+            return;
+        }
+        // 创建文件夹
+        if (!Files.exists(Paths.get(s_recordFileSavePath))) {
+            try {
+                Files.createDirectories(Paths.get(s_recordFileSavePath));
+            } catch (IOException e) {
+                log.info("=====> 创建视频文件夹失败");
+            }
+        }
+        ProcessBuilder extractBuilder = new ProcessBuilder("ffmpeg", "-timeout", "1000000", "-ss", "0", "-y", "-rtsp_transport", " tcp", "-i",
+                videoRtspUrl, "-b:v", "1000k", "-vcodec", "copy", "-f", "mp4", targetFileName);
+        try {
+            Process process = extractBuilder.inheritIO().start();
+            if (!process.waitFor(15, TimeUnit.SECONDS)) {
+                log.error("Process did not finish within the timeout. Forcefully destroying...");
+                process.destroy();
+                return;
+            }
+        } catch (Exception e) {
+            log.error("=====>  下载视频失败");
+            e.printStackTrace();
+        }
+        SftpUtils sftpUtils = new SftpUtils();
+        TkConfigParam.Sftp sftp = tkConfigParam.getSftp();
+        boolean b = sftpUtils.login(sftp.getUsername(), sftp.getPassword(), sftp.getHost(), sftp.getPort(), null);
+        if (b) {
+            // 上传文件到远程
+            File targetFile = new File(targetFileName);
+            if (!targetFile.isFile()) {
+                log.info("视频{}未下载成功", targetFileName);
+                return;
+            }
+            try {
+                InputStream inputStream = Files.newInputStream(targetFile.toPath());
+
+                boolean upload = sftpUtils.upload(uploadVideoPath, uploadVideoName, inputStream);
+                if (upload) {
+                    inputStream.close();
+                    if (Params.LOCAL_DELETE_FLAG) {
+                        boolean delete = targetFile.delete();
+                        if (delete) {
+                            log.info("本地文件删除成功 [{}] ... ...", targetFileName);
+                        }
+                    }
+                    HuaweiVideoQueue queue = new HuaweiVideoQueue();
+                    queue.setAlarmEventId(alarmEventId);
+                    queue.setIsDownload(1);
+                    huaweiVideoQueueMapper.updateById(queue);
+                }
+            } catch (Exception e) {
+                log.error("======> 上传视频失败");
+                e.printStackTrace();
+            }
         }
 
     }
@@ -216,26 +283,25 @@ public class HuaweiIvsMediaServiceImpl implements HuaweiIvsMediaService {
     }
 
     public static void main(String[] args) {
-/*        String alarmVideoPath = "/xxx/video/xxx/20220801/xxx_101_31_20220801162200.mp4";
-        String[] split = alarmVideoPath.split("/");
-        String videoPath = StrUtil.removeAll(alarmVideoPath, split[split.length - 1]);
-        System.out.println(videoPath);*/
-
-        // C:\Users\admin\Pictures\Camera Roll\wallhaven-1kpv89.jpg
-        // /tkydzs/image/hw/20240108/hw_112_48_20240108195134625.jpg
-        //
-        String a = "/tkydzs/image/hw/20240111/hw_112_48_20240111192632502.jpg";
-
-        String[] split = a.split("/");
-        long alarmTime = new Date().getTime();
-        String imgPath = "/home/tky/image/" + "hw/" + alarmTime + "/";
-        if (split.length <= 1) {
-            split = a.split("\\\\");
-            imgPath = a.substring(0, a.lastIndexOf("\\") + 1);
+        String rstpUrl = "rtsp://192.168.80.181:554/08120267724140340101?DstCode=01&ServiceType=3&ClientType=0&StreamID=1&SrcTP=2&DstTP=2&SrcPP=0&DstPP=1&MediaTransMode=0&BroadcastType=0&SV=1&TimeSpan=20240115T235857Z-20240115T235902Z&Token=4YSM1rXWnTZMSmCJjwwJe0V64/KZKJqC4rSgnY9vf+I=&";
+        String aa = "D:\\files\\video\\aa.mp4";
+        if (StrUtil.isBlank(rstpUrl) || StrUtil.isBlank(aa)) {
+            return;
         }
-        String imageName = split[split.length - 1];
-        System.out.println(imageName);
-        System.out.println(imgPath);
+        ProcessBuilder extractBuilder = new ProcessBuilder("ffmpeg", "-timeout", "100000", "-ss", "0", "-y", "-rtsp_transport", " tcp", "-i",
+                rstpUrl, "-b:v", "1000k", "-vcodec", "copy", "-f", "mp4", aa);
+        try {
+            Process process = extractBuilder.inheritIO().start();
+            if (!process.waitFor(10, TimeUnit.SECONDS)) {
+                System.err.println("Process did not finish within the timeout. Forcefully destroying...");
+                process.destroy();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
 
     }
 

@@ -21,8 +21,9 @@ public interface HuaweiIvsMediaService {
      * @param alarmGuid    报警ip
      * @param alarmTime    报警时间
      */
-    void downloadIvsVideo(String cameraNumber, String alarmGuid, String alarmVideoPath, Date alarmTime);
+    void downloadIvsVideo(String cameraNumber, String alarmEventId, String alarmVideoPath, Date alarmTime);
 
+    void downloadIvsVideoByFFmpeg(String cameraNumber, String alarmEventId, String alarmVideoPath, Date alarmTime,String uploadAlarmVideo);
     /**
      * 添加下载视频到下载队列
      *
@@ -30,7 +31,7 @@ public interface HuaweiIvsMediaService {
      * @param alarmGuid    报警ip
      * @param alarmTime    报警时间
      */
-    void addDownloadAlarmIvsVideoQueue(String cameraNumber, String alarmGuid, String alarmVideoPath, Date alarmTime);
+    void addDownloadAlarmIvsVideoQueue(String cameraNumber, String alarmEventId, String alarmVideoPath, Date alarmTime,String uploadVideoName);
 
     String uploadImg(TKAlarmInfo alarmInfo, String LocalFileName);
 }
