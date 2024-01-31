@@ -48,7 +48,7 @@ public class HuaweiIvsSchedule {
     private TkConfigParam tkConfigParam;
 
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void huaweiIvsKeepLive() {
 
         if (huaweiConfigParam.getIvs().isEnable() && Params.ivsCookie != null) {
