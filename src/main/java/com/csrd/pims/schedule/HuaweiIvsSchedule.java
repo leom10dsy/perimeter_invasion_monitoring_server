@@ -48,7 +48,7 @@ public class HuaweiIvsSchedule {
     private TkConfigParam tkConfigParam;
 
 
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void huaweiIvsKeepLive() {
 
         if (huaweiConfigParam.getIvs().isEnable() && Params.ivsCookie != null) {
@@ -121,12 +121,11 @@ public class HuaweiIvsSchedule {
             if (queues.size() > 0) {
                 log.info("当前下载数目为：{}", queues.size());
                 for (HuaweiVideoQueue queue : queues) {
-                    mediaService.downloadIvsVideoByFFmpeg(
+                    mediaService.downloadIvsVideo(
                             queue.getCameraNumber(),
-                            queue.getAlarmEventId(),
+                            queue.getCompanyAlarmId(),
                             queue.getAlarmVideo(),
-                            queue.getAlarmTime(),
-                            queue.getUploadVideoName()
+                            queue.getAlarmTime()
                     );
                 }
             }

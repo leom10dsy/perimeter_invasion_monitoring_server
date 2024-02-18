@@ -325,8 +325,9 @@ public class HuaweiIvsAlarmHandler {
             // 设置报警基本信息
             hwAlarmInfo = new HWAlarmInfo();
             hwAlarmInfo.setEventId(alarmEventId);
-            hwAlarmInfo.setAlarmType("ivs");
+            hwAlarmInfo.setAlarmType("nce");
             hwAlarmInfo.setAlarmTime(alarmTime);
+            hwAlarmInfo.setAlarmLevel(0);
             hwAlarmInfo.setAlarmState(AlarmStateEnum.START.getValue());
             Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
             // 设置报警参数
@@ -336,7 +337,7 @@ public class HuaweiIvsAlarmHandler {
             hwAlarmInfo.setAlarmTime(alarmTime);
             Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
         }
-        log.info("开始处理ivs -- 光视报警");
+        log.info("开始处理nce -- 光视报警");
         HuaweiNceDefaultDistance huaweiNceDefaultDistance = huaweiNceDefaultDistanceMapper.selectById(huaweiNceCamera.getCameraNumber());
         String position = "";
         if (huaweiNceDefaultDistance == null) {

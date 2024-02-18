@@ -18,8 +18,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class HuaweiVideoQueue {
 
-    @TableId("alarmEventId")
-    private String alarmEventId;
+    @TableId("companyAlarmId")
+    private String companyAlarmId;
 
     @TableField("cameraNumber")
     private String cameraNumber;
@@ -34,9 +34,6 @@ public class HuaweiVideoQueue {
     // 是否已下载，0：否 1：是
     @TableField("isDownload")
     private int isDownload;
-
-    @TableField("uploadVideoName")
-    private String uploadVideoName;
 
 
 }

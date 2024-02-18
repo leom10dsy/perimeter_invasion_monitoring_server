@@ -22,7 +22,7 @@ public class HuaweiIvsScheduleHandler {
 
     public List<HuaweiVideoQueue> downloadVideo(int size) {
         LambdaQueryWrapper<HuaweiVideoQueue> wrapper = new LambdaQueryWrapper<>();
-        wrapper.orderByDesc(HuaweiVideoQueue::getAlarmTime);
+        wrapper.orderBy(true, true, HuaweiVideoQueue::getAlarmTime);
         wrapper.eq(HuaweiVideoQueue::getIsDownload, 0);
         wrapper.last("limit " + size);
         return huaweiVideoQueueMapper.selectList(wrapper);

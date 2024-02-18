@@ -151,12 +151,12 @@ public class HuaweiIvsServiceImpl implements HuaweiIvsService {
             Calendar calendarStart = Calendar.getInstance();
             calendarStart.setTime(alarmTime);
             calendarStart.add(Calendar.HOUR, -8);
-            calendarStart.add(Calendar.SECOND, 0);
+            calendarStart.add(Calendar.SECOND, -20);
 
             Calendar calendarEnd = Calendar.getInstance();
             calendarEnd.setTime(alarmTime);
             calendarEnd.add(Calendar.HOUR, -8);
-            calendarEnd.add(Calendar.SECOND, 7);
+            calendarEnd.add(Calendar.SECOND, -15);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
             String timeStart = sdf.format(calendarStart.getTime());
             String timeEnd = sdf.format(calendarEnd.getTime());
