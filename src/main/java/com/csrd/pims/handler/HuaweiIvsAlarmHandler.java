@@ -209,13 +209,11 @@ public class HuaweiIvsAlarmHandler {
                 tkAlarmMapper.insert(tkAlarmInfo);
                 hwAlarmInfo.setAlarmLevel(1);
                 hwAlarmInfo.setAlarmState(AlarmStateEnum.START.getValue());
-                Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
             } else if (hwAlarmInfo.getAlarmLevel() == 1) {
                 log.info("=====> 插入进行中的报警");
                 tkAlarmMapper.insert(tkAlarmInfo);
                 hwAlarmInfo.setAlarmLevel(2);
                 hwAlarmInfo.setAlarmState(AlarmStateEnum.MIDDLE.getValue());
-                Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
             } else {
                 //alarmLevel() == 2
                 //长期运行不推送
@@ -263,7 +261,6 @@ public class HuaweiIvsAlarmHandler {
         HWAlarmInfo hwAlarmInfo = Params.LATEST_ALARM_TIME.get(eventPrefix);
         int alarmStateCalc = alarmStateCalc(eventPrefix);
         hwAlarmInfo.setAlarmState(alarmStateCalc);
-        Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
         tkAlarmInfo.setAlarmState(alarmStateCalc);
         tkAlarmInfo.setIsPushAlarm(0);
         String message = GsonUtil.toJson(tkAlarmInfo);
