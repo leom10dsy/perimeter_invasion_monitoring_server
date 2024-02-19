@@ -219,13 +219,11 @@ public class HuaweiIvsAlarmHandler {
                 tkAlarmMapper.insert(tkAlarmInfo);
                 hwAlarmInfo.setAlarmLevel(1);
                 hwAlarmInfo.setAlarmState(AlarmStateEnum.START.getValue());
-                Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
             } else if (hwAlarmInfo.getAlarmLevel() == 1) {
                 log.info("=====> 插入进行中的报警");
                 tkAlarmMapper.insert(tkAlarmInfo);
                 hwAlarmInfo.setAlarmLevel(2);
                 hwAlarmInfo.setAlarmState(AlarmStateEnum.MIDDLE.getValue());
-                Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
             } else {
                 //alarmLevel() == 2
                 //长期运行不推送
@@ -269,11 +267,9 @@ public class HuaweiIvsAlarmHandler {
             log.info("=====> scheduled task has removed key!!!");
             return;
         }
-        // 空指针 LATEST_ALARM_TIME.size = 0 定时任务remove了key
         HWAlarmInfo hwAlarmInfo = Params.LATEST_ALARM_TIME.get(eventPrefix);
         int alarmStateCalc = alarmStateCalc(eventPrefix);
         hwAlarmInfo.setAlarmState(alarmStateCalc);
-        Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
         tkAlarmInfo.setAlarmState(alarmStateCalc);
         tkAlarmInfo.setIsPushAlarm(0);
         String message = GsonUtil.toJson(tkAlarmInfo);
@@ -345,7 +341,6 @@ public class HuaweiIvsAlarmHandler {
         } else {
             hwAlarmInfo = Params.LATEST_ALARM_TIME.get(eventPrefix);
             hwAlarmInfo.setAlarmTime(alarmTime);
-            Params.LATEST_ALARM_TIME.put(eventPrefix, hwAlarmInfo);
         }
         log.info("开始处理ivs -- 光视报警");
         HuaweiNceDefaultDistance huaweiNceDefaultDistance = huaweiNceDefaultDistanceMapper.selectById(huaweiNceCamera.getCameraNumber());
@@ -405,7 +400,6 @@ public class HuaweiIvsAlarmHandler {
         } else {
             hwAlarmInfo = Params.LATEST_ALARM_TIME.get(ivsEventPrefix);
             hwAlarmInfo.setAlarmTime(alarmTime);
-            Params.LATEST_ALARM_TIME.put(ivsEventPrefix, hwAlarmInfo);
         }
         // 设置报警参数
         tkAlarmInfo.setAlarmEventId(hwAlarmInfo.getEventId());
