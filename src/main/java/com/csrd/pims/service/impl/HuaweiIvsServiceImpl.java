@@ -271,7 +271,7 @@ public class HuaweiIvsServiceImpl implements HuaweiIvsService {
             if (cookie != null && cookie.length() > 0) {
                 Params.ivsCookie = cookie.split(";")[0];
                 loginResultRest = true;
-                log.info("=====>localPath:{}, ivs cookie:{}", Params.LOCAL_IP, Params.ivsCookie);
+                log.info("=====>localPath:{},resultCode:{}, ivs cookie:{}", Params.LOCAL_IP, loginResult.getCode(), Params.ivsCookie);
             }
         } else {
             log.info("Login Huawei IVS Failed,Code:{}, body: {}", res.getStatus(), res.body());
